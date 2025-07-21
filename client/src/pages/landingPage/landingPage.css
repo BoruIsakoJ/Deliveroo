@@ -1,0 +1,64 @@
+.hero-page{
+    height: calc(140vh - 100px);
+    background-color: red;
+}
+.hero-title{
+    height: 428px;
+    background:linear-gradient(rgb(27,85,142), rgb(36,118,189));
+    text-align: center;
+    color: white;
+    padding: 20px 40px;
+}
+.hero-title-white,.hero-title-orange{
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 40px;
+}
+.hero-title-white{
+    margin-top: 40px;
+}
+.hero-title-orange{
+    color: orangered;
+    margin-bottom: 40px;
+}
+.hero-title-text{
+    font-size: 20px;
+    line-height: 28px;
+    max-width: 768px;  
+    margin: 0 auto;  
+    font-weight: 200;
+}
+.hero-title-buttons{
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.orange-btn, .blue-btn{
+    color: white;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 28px;
+    padding: 8px 20px;
+    transition: all .3s ease;
+    cursor: pointer;
+}
+.orange-btn{
+    background-color: rgb(249, 116, 21);
+}
+.orange-btn:hover{
+  transform: translateY(-0.25em);
+
+}
+.blue-btn{
+    background: rgb(24, 119, 204);
+    border: 1px solid rgba(211, 210, 210, 0.4);
+}
+.blue-btn:hover{
+    border: 1px solid transparent ;
+    color: black;
+}

@@ -64,10 +64,44 @@ class Register(Resource):
                 {'error':str(e)},
                 400
             )
-        
+
+
+
 
 api.add_resource(Register, '/register')
 
+class Login(Resource):
+    def post(self):
+        data = request.get_json()
+
+        email= data.get('email')
+        password= data.get('password')
+
+        if not email:
+            return make_response(
+                {'error':'Please fill out the email field'},
+                400
+            )
+        if not password:
+            return make_response(
+                {'error':'Please fill out the password field'},
+                400
+            )
+        
+        user = User.query.filter(User.email==email).first()
+        if user and user.authenticate(password):
+            session['user_id']=user.id
+            return make_response(
+                user.to_dict(),
+                201
+            )
+        
+        else:
+            return make_response(
+                {'error':'Unauthorized!'},
+                422
+            )
+        
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

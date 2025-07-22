@@ -1,0 +1,38 @@
+@import '../login/login.css';
+
+.signup-page-btn {
+    background: linear-gradient(135deg, rgb(23, 207, 207), rgb(2, 132, 197));
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    margin-top: 20px;
+    padding: 8px 16px;
+    width: 100%;
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.signup-page-btn:hover {
+    transform: translateY(-0.25em);
+    box-shadow: 0 2px 4px black;
+}
+
+.signup-page-icon {
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+.return-to-login {
+    font-size: 14px;
+    line-height: 20px;
+    color: rgb(100, 116, 139);
+}

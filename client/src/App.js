@@ -5,6 +5,7 @@ import Navbar from './components/navbar/Navbar';
 import UserNavBar from './components/userNavbar/UserNavbar';
 import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
+import Track from './pages/track/Track';
 
 function App() {
   const login = false
@@ -17,6 +18,7 @@ function App() {
             <Route path='/' element={<LandingPage />} />
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<Signup/>}/>
+            <Route path='/track' element={<Track/>}/>
           </Routes>
         </div>
       </div>

@@ -103,5 +103,23 @@ class Login(Resource):
             )
         
 
+
+class OrderByIdResource(Resource):
+    def get(self,id):
+
+        order = Order.query.filter(Order.tracking_number==id).first()
+        if not order:
+            return make_response(
+                {'error':f'Order with tracking number {id} does not exists'},
+                400
+            )
+        return make_response(
+            order.to_dict(),
+            200
+        )
+
+
+
+api.add_resource(OrderByIdResource,'/orders/<string:id>')
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

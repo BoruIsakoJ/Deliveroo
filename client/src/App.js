@@ -7,6 +7,7 @@ import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
 import Track from './pages/track/Track';
 import Admin from './pages/admin/Admin';
+import Dashboard from './pages/dashboard/Dashboard';
 
 function App() {
   const login = false
@@ -21,6 +22,7 @@ function App() {
             <Route path='/signup' element={<Signup/>}/>
             <Route path='/track' element={<Track/>}/>
             <Route path='/admin' element={<Admin/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
           </Routes>
         </div>
       </div>

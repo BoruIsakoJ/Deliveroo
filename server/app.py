@@ -8,7 +8,7 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from sqlalchemy.exc import IntegrityError
 
-from models import db, User, Courier,Order,TrackingOrder
+from models import db, User, Order, TrackingOrder
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -66,9 +66,9 @@ class Register(Resource):
             )
 
 
-
-
 api.add_resource(Register, '/register')
+
+
 
 class Login(Resource):
     def post(self):
@@ -101,7 +101,10 @@ class Login(Resource):
                 {'error':'Unauthorized!'},
                 422
             )
-        
+
+
+api.add_resource(Login, '/login')
+    
 
 
 class OrderByIdResource(Resource):
@@ -119,7 +122,8 @@ class OrderByIdResource(Resource):
         )
 
 
-
 api.add_resource(OrderByIdResource,'/orders/<string:id>')
+
+
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

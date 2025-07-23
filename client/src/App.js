@@ -6,6 +6,7 @@ import UserNavBar from './components/userNavbar/UserNavbar';
 import Login from './pages/login/Login';
 import Signup from './pages/signup/Signup';
 import Track from './pages/track/Track';
+import Admin from './pages/admin/Admin';
 
 function App() {
   const login = false
@@ -19,6 +20,7 @@ function App() {
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<Signup/>}/>
             <Route path='/track' element={<Track/>}/>
+            <Route path='/admin' element={<Admin/>}/>
           </Routes>
         </div>
       </div>

@@ -29,6 +29,9 @@ function Login({setIsLoggedIn,setCurrentUser}) {
         if (res.ok) {
           return res.json()
         }
+        else if (data.isCourier) {
+          navigate('/courier')
+        }
         else {
           throw new Error('Login failed');
         }

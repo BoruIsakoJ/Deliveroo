@@ -1,0 +1,54 @@
+.parcels-page {
+    padding: 2rem;
+    margin-top: 60px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+.parcels-page h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.mute {
+    color: #64748b;
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.user-data-grid {
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    height: 500px;
+}
+
+.route {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-button {
+    background-color: #007bff;
+    color: white;   
+}
+
+.cancel-button{
+    color: red;
+}
+.cancel-button:hover{
+    text-decoration: underline;
+}
+.edit-button.disabled,
+.cancel-button.disabled {
+  cursor: not-allowed;
+  cursor:disabled;
+}

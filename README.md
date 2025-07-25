@@ -1,82 +1,29 @@
-# Deliveroo Courier Service – Phase 5 Team Project
+# How to Have a Running Code on Your Machine 
 
-Deliveroo is a courier service application that allows users to send parcels to various destinations and track them in real-time via Google Maps. This is a collaborative full-stack project built with **React (frontend)** and **Flask (backend)** using **PostgreSQL (prod)** and **SQLite (dev)**.
-
----
-
-## Project Structure
-
-```
-deliveroo/
-├── client/                # React frontend (created with Create React App)
-├── server/               # Flask backend
-│   ├── app.py
-│   ├── config.py
-│   ├── models.py
-├── seed.py               # DB seeder
-├── .env                  # Environment config (Not committed to Git)
-├── .gitignore
-```
-
----
-
-## Branching Strategy
-
-We are following a simple and clean Git workflow:
-
-- `main` → Production-ready code
-- `dev` → Integrates all **tested and stable** feature branches
-- `feature/your-feature-name` → New features or bug fixes
-
-### Workflow Guidelines
+## Download Guidelines
 
 1. **Clone** the repo
    ```bash
-   git clone <repo-url>
+   git clone git@github.com:BoruIsakoJ/Deliveroo.git
    cd deliveroo
    ```
 
-2. **Create a feature branch**
+   **If you cloned the project before go ahead to step 2**
+   <br/>
+
+2. **Switch to develop branch**
    ```bash
-   git checkout dev
-   git checkout -b feature/your-feature-name
+   git checkout develop
    ```
 
-3. Work on your changes.
+3. **Pull all the new changes**
+```bash
+   git pull origin develop
+```
 
-4. **Commit regularly**
-   ```bash
-   git add .
-   git commit -m "Add: <your meaningful message>"
-   ```
+4. **Create a local file called `.env` at the `ROOT` of the project**
 
-5. **Push and create a PR**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-6. **Open a Pull Request** into the `dev` branch and request review.
-
----
-
-## Setting Up Your Development Environment
-
-### Backend (Flask + SQLite)
-
-1. **Navigate to the root project folder**:
-   ```bash
-   cd deliveroo
-   ```
-
-2. **Install dependencies and activate virtual env**
-   ```bash
-   pipenv install
-   pipenv shell
-   ```
-
-3. **Create your local `.env` file**
-
-   Create a `.env` file in the root and add:
+   Create a `.env` file in the root and paste:
    ```env
    FLASK_APP=server/app.py
    FLASK_SQLALCHEMY_DATABASE_URI=sqlite:///app.db
@@ -86,15 +33,20 @@ We are following a simple and clean Git workflow:
    FLASK_RUN_PORT=5000
    ```
 
-4. **Run the backend**
+### Run Backend (Flask)
+
+1. **Install dependencies and activate virtual env**
+   ```bash
+   pipenv install && pipenv shell
+   ```
+
+2. **Run the backend**
    ```bash
    flask run
    ```
 
----
-
-### Frontend (React)
-
+### Run Frontend (React)
+Open a **NEW** Terminal and cd into client folder and run the following lines one by one:
 1. Navigate to the frontend folder:
    ```bash
    cd client
@@ -110,9 +62,24 @@ We are following a simple and clean Git workflow:
    npm start
    ```
 
-## Notes
+### Working on Future Features
+1. **Create a feature branch**
+   ```bash
+   git checkout develop
+   git flow feature start your-feature-name
+   ```
 
-- Keep your feature branches **short-lived and focused**.
-- **Avoid direct commits to `dev` or `main`.**
-- Pull changes from `dev` before pushing your feature branch to resolve conflicts early.
+2. Work on your changes.
 
+3. **Commit regularly**
+   ```bash
+   git add .
+   git commit -m "Add: <your meaningful message>"
+   ```
+
+5. **Push and create a PR**
+   ```bash
+   git push origin your-feature-name
+   ```
+
+6. Open a **Pull Request** into the `develop` branch and request review.

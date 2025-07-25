@@ -1,13 +1,10 @@
 from flask import Flask,request,session,make_response,render_template
 from config import Config
-from flask import Flask
 from flask_cors import CORS
-from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from sqlalchemy.exc import IntegrityError
-
 from models import db, User, Order, TrackingOrder
 
 app = Flask(__name__)
@@ -308,7 +305,7 @@ class Me(Resource):
 api.add_resource(Me,'/me')
 
 
-api.add_resource(OrderByIdResource,'/orders/<string:id>')
+
 
 class UserResources(Resource):
     def get(self):
@@ -493,6 +490,24 @@ class OrderByUserSessionById(Resource):
 
 api.add_resource(OrderByUserSessionById,'/user_orders/<string:id>')
 
+
+class Logout(Resource):
+    def delete(self):
+        user_id = session.get('user_id')
+
+        if user_id:
+            session.pop('user_id')
+            return make_response(
+                {'message':'Successfully logged out. See you later.'},
+                200
+            )
+        
+        return make_response(
+            {'error':'You are not logged in'},
+            422
+        )
+
+api.add_resource(Logout, '/logout')
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

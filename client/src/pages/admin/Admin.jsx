@@ -166,7 +166,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Pending</h3>
                                 <ErrorOutlineOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -175,7 +175,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Confirmed</h3>
                                 <RecommendOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -193,7 +193,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>In Transit</h3>
                                 <LocalShippingOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -202,7 +202,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Delivered</h3>
                                 <CheckCircleOutlinedIcon className='total-orders-icon' />
                             </div>

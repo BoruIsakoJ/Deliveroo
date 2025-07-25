@@ -29,9 +29,6 @@ function Login({setIsLoggedIn,setCurrentUser}) {
         if (res.ok) {
           return res.json()
         }
-        else if (data.isCourier) {
-          navigate('/courier')
-        }
         else {
           throw new Error('Login failed');
         }
@@ -42,6 +39,9 @@ function Login({setIsLoggedIn,setCurrentUser}) {
         setCurrentUser(data)
         if (data.isAdmin) {
         navigate('/admin')}
+        else if (data.isCourier) {
+          navigate('/courier')
+        }
         else {
           navigate('/dashboard')
         }

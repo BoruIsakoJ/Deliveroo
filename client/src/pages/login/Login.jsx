@@ -39,6 +39,9 @@ function Login({setIsLoggedIn,setCurrentUser}) {
         setCurrentUser(data)
         if (data.isAdmin) {
         navigate('/admin')}
+        else if (data.isCourier) {
+          navigate('/courier')
+        }
         else {
           navigate('/dashboard')
         }

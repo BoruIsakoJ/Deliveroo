@@ -1,14 +1,11 @@
 from flask import Flask,request,session,make_response,render_template
 from config import Config
-from flask import Flask
 from flask_cors import CORS
-from sqlalchemy import MetaData
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from sqlalchemy.exc import IntegrityError
-
-from models import db, User, Courier,Order,TrackingOrder
+from models import db, User, Order, TrackingOrder
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -66,9 +63,9 @@ class Register(Resource):
             )
 
 
-
-
 api.add_resource(Register, '/register')
+
+
 
 class Login(Resource):
     def post(self):
@@ -101,7 +98,416 @@ class Login(Resource):
                 {'error':'Unauthorized!'},
                 422
             )
+
+
+api.add_resource(Login, '/login')
+    
+
+class OrderByCourierSession(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
         
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User not found'}, 404)
+
+        orders =[order for order in Order.query.filter(Order.courier_id==user_id).all()]
+        simplified_orders = []
+        for order in orders:
+            simplified_orders.append({
+                'id': order.id,
+                'tracking_number': order.tracking_number,
+                'status': order.status,
+                'price_estimate': order.price_estimate,
+                'created_at': order.created_at.isoformat() if order.created_at else None,
+                'pickup_location': order.pickup_location,
+                'destination': order.destination,
+                'present_location': order.present_location,
+            })
+
+        return make_response(simplified_orders, 200)
+api.add_resource(OrderByCourierSession, '/courier_orders/')
+
+class OrderByCourieSessionById(Resource):
+    def get(self, id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
+
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User not found'}, 404)
+
+        order = Order.query.filter(Order.tracking_number == id, Order.courier_id == user_id).first()
+        if not order:
+            return make_response({'error': 'Order not found'}, 404)
+
+        return make_response(order.to_dict(), 200)
+    
+    def patch(self,id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
+
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User not found'}, 404)
+
+        order = Order.query.filter(Order.tracking_number == id, Order.courier_id == user_id).first()
+        if not order:
+            return make_response({'error': 'Order not found'}, 404)
+
+        data = request.get_json()
+        status_changed = False
+        new_status = None
+
+        for attr,value in data.items():
+            if hasattr(order,attr):
+                if attr=='status':
+                    status_changed = True
+                    new_status = value
+            setattr(order,attr,value)
+
+        db.session.commit()
+
+        if status_changed:
+            tracking_update=TrackingOrder(status=new_status,description=f'Status updated to {new_status}',order_id=order.id)
+            db.session.add(tracking_update)
+            db.session.commit()
+
+
+        return make_response(
+            order.to_dict(),
+            200
+        )
+api.add_resource(OrderByCourieSessionById, '/courier_orders/<string:id>')
+
+class OrderByIdResource(Resource):
+    def get(self,id):
+
+        order = Order.query.filter(Order.tracking_number==id).first()
+        if not order:
+            return make_response(
+                {'error':f'Order with tracking number {id} does not exists'},
+                400
+            )
+        return make_response(
+            order.to_dict(),
+            200
+        )
+    
+    def patch(self,id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(
+                {'error':'User is not logged in'},
+                422
+            )
+        
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'Unauthorized!'}, 422)
+        
+        order = Order.query.filter(Order.tracking_number==id).first()
+        if not order:
+            return make_response(
+                {'error':f'Order with {id} does not exists'},
+                400
+            )
+        
+        data = request.get_json()
+        status_changed = False
+        new_status = None
+
+        for attr,value in data.items():
+            if hasattr(order,attr):
+                if attr=='status':
+                    status_changed = True
+                    new_status = value
+            setattr(order,attr,value)
+
+        db.session.commit()
+
+        if status_changed:
+            tracking_update=TrackingOrder(status=new_status,description=f'Status updated to {new_status}',order_id=order.id)
+            db.session.add(tracking_update)
+            db.session.commit()
+
+
+        return make_response(
+            order.to_dict(),
+            200
+        )
+    
+    def delete(self,id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(
+                {'error':'User is not logged in'},
+                422
+            )
+        
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'Unauthorized!'}, 422)
+        
+        order = Order.query.filter(Order.tracking_number==id).first()
+        if not order:
+            return make_response(
+                {'error':f'Order with {id} does not exists'},
+                400
+            )
+        
+        try:
+            db.session.delete(order)
+            db.session.commit()
+
+            return make_response(
+                {'message':'Order has been deleted successfully!'},
+                200
+            )
+        except Exception as e:
+            db.session.rollback()
+            return make_response(
+                {'error':f'Failed to delete: {str(e)}'},
+                500
+            )
+api.add_resource(OrderByIdResource,'/orders/<string:id>')
+
+class CourierResource(Resource):
+    def get(self):
+        couriers_dict = [courier.to_dict() for courier in User.query.filter_by(isCourier=True).all()]
+        return make_response(couriers_dict, 200)
+
+api.add_resource(CourierResource, '/couriers')
+
+class Me(Resource):
+    def get(self):
+        user_id =session.get('user_id')
+        if not user_id:
+            return make_response(
+                {'error':'You are not logged in'},
+                401
+            )
+        user = User.query.get(user_id)
+        if not user:
+            return make_response(
+                {'error':'User not found'},
+                404
+            )
+        return make_response(
+            user.to_dict(),
+            200
+        )
+
+api.add_resource(Me,'/me')
+
+
+
+
+class UserResources(Resource):
+    def get(self):
+        users_dict = [user.to_dict() for user in User.query.all()]
+        return make_response(
+            users_dict,
+            200
+        )
+api.add_resource(UserResources,'/users')
+
+class OrderResource(Resource):
+    def get(self):
+        orders = Order.query.all()
+
+        simplified_orders = []
+        for order in orders:
+            simplified_orders.append({
+                'id': order.id,
+                'tracking_number': order.tracking_number,
+                'status': order.status,
+                'price_estimate': order.price_estimate,
+                'created_at': order.created_at.isoformat() if order.created_at else None,
+                'pickup_location': order.pickup_location,
+                'destination': order.destination,
+                'present_location': order.present_location,
+                'customer_name': order.user.name if order.user else 'N/A',
+                'customer_phone_number': order.user.phone_number  if order.user else 'N/A',
+                'courier_name': order.courier.name if order.courier else 'N/A',
+                'courier_phone_number': order.courier.phone_number if order.courier else 'N/A',
+
+            })
+
+        return make_response(simplified_orders, 200)
+
+    
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'Unauthorized'}, 422)
+
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User is not available'}, 404)
+        
+        data = request.get_json()
+        pickup_location = data.get('pickup_location')
+        destination = data.get('destination')
+        weight_in_kg = data.get('weight_in_kg')
+        price_estimate = data.get('price_estimate')
+        user_id_field= user_id
+        courier_id= data.get('courier_id')
+
+        try:
+            new_order = Order(pickup_location=pickup_location,destination=destination,present_location=pickup_location,weight_in_kg=weight_in_kg,price_estimate=price_estimate,user_id=user_id_field,courier_id=courier_id)
+            db.session.add(new_order)
+            db.session.commit()
+
+            initial_tracking = TrackingOrder(status=new_order.status, description=f'Order created. Pickup at {new_order.pickup_location}',order_id=new_order.id)
+            db.session.add(initial_tracking)
+            db.session.commit()
+
+            return make_response(
+                new_order.to_dict(),
+                201
+            )
+
+        except IntegrityError:
+            db.session.rollback()
+            return make_response(
+                {'error': 'Database integrity error.'},
+                409
+            )
+
+        except Exception as e:
+            db.session.rollback()
+            return make_response(
+                {'error': f'Unexpected error: {str(e)}'}, 
+                500
+            )
+
+        except ValueError as e:
+            return make_response(
+                {'error': f'Invalid data type: {str(e)}'},
+                400
+            )
+api.add_resource(OrderResource, '/orders')   
+
+class OrderByUser(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
+        
+        orders_dict =[order.to_dict() for order in Order.query.filter(Order.user_id==user_id).all()]
+
+        return make_response(
+            orders_dict,
+            200
+        )
+api.add_resource(OrderByUser, '/orders/user')
+
+class OrderByUserSession(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
+        
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User not found'}, 404)
+
+        orders =[order for order in Order.query.filter(Order.user_id==user_id).all()]
+        simplified_orders = []
+        for order in orders:
+            simplified_orders.append({
+                'id': order.id,
+                'tracking_number': order.tracking_number,
+                'status': order.status,
+                'price_estimate': order.price_estimate,
+                'created_at': order.created_at.isoformat() if order.created_at else None,
+                'pickup_location': order.pickup_location,
+                'destination': order.destination,
+                'present_location': order.present_location,
+            })
+
+        return make_response(simplified_orders, 200)
+api.add_resource(OrderByUserSession,'/user_orders/')
+
+
+class OrderByUserSessionById(Resource):
+    def get(self, id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
+
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User not found'}, 404)
+
+        order = Order.query.filter(Order.tracking_number == id, Order.user_id == user_id).first()
+        if not order:
+            return make_response({'error': 'Order not found'}, 404)
+
+        return make_response(order.to_dict(), 200)
+    
+    def patch(self,id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'User not logged in'}, 401)
+
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return make_response({'error': 'User not found'}, 404)
+
+        order = Order.query.filter(Order.tracking_number == id, Order.user_id == user_id).first()
+        if not order:
+            return make_response({'error': 'Order not found'}, 404)
+
+        data = request.get_json()
+        status_changed = False
+        new_status = None
+
+        for attr,value in data.items():
+            if hasattr(order,attr):
+                if attr=='status':
+                    status_changed = True
+                    new_status = value
+            setattr(order,attr,value)
+
+        db.session.commit()
+
+        if status_changed:
+            tracking_update=TrackingOrder(status=new_status,description=f'Status updated to {new_status}',order_id=order.id)
+            db.session.add(tracking_update)
+            db.session.commit()
+
+
+        return make_response(
+            order.to_dict(),
+            200
+        )
+
+api.add_resource(OrderByUserSessionById,'/user_orders/<string:id>')
+
+
+class Logout(Resource):
+    def delete(self):
+        user_id = session.get('user_id')
+
+        if user_id:
+            session.pop('user_id')
+            return make_response(
+                {'message':'Successfully logged out. See you later.'},
+                200
+            )
+        
+        return make_response(
+            {'error':'You are not logged in'},
+            422
+        )
+
+api.add_resource(Logout, '/logout')
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

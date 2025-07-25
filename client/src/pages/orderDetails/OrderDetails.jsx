@@ -53,10 +53,10 @@ function OrderDetails() {
 
                             <div className="info-box">
                                 <h4 className="info-title">Courier Info</h4>
-                                <div className="info-line"><span className="label">Name:</span> {order.courier.name}</div>
+                                <div className="info-line"><span className="label">Name:</span> {order.courier?.name || 'Courier to be assigned!'}</div>
                                 <div className="info-line">
                                     <span className="label">Phone:</span>
-                                    <a href={`tel:${order.courier.phone_number}`} className="courier-phone">{order.courier.phone_number}</a>
+                                    <a href={`tel:${order.courier?.phone_number}`} className="courier-phone">{order.courier?.phone_number || 'N/A'}</a>
                                 </div>
                             </div>
                         </div>

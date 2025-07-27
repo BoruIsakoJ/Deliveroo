@@ -7,9 +7,11 @@ import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CachedIcon from '@mui/icons-material/Cached';
 import { DataGrid } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { useJsApiLoader, Autocomplete } from '@react-google-maps/api'
+
 
 import { Link } from 'react-router-dom';
 
@@ -20,7 +22,8 @@ function Admin() {
             .then(res => res.json())
             .then(data => {
                 console.log('Fetched orders:', data)
-                setOrders(data)
+                const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                setOrders(sortedData)
             })
             .catch(err => console.error('Error fetching orders:', err))
     }, [])
@@ -146,7 +149,16 @@ function Admin() {
             .catch(err => console.error('Error fetching couriers:', err))
     }, [])
 
+    const autocompleteRef = useRef(null);
+    const locationInputRef = useRef(null);
 
+
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries: ['places']
+    })
+
+    if (!isLoaded) return <p>Loading Google Maps...</p>
 
 
     return (
@@ -166,7 +178,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div className='total-orders-heading'>
+                            <div class='total-orders-heading'>
                                 <h3>Pending</h3>
                                 <ErrorOutlineOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -175,7 +187,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div className='total-orders-heading'>
+                            <div class='total-orders-heading'>
                                 <h3>Confirmed</h3>
                                 <RecommendOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -193,7 +205,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div className='total-orders-heading'>
+                            <div class='total-orders-heading'>
                                 <h3>In Transit</h3>
                                 <LocalShippingOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -202,7 +214,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div className='total-orders-heading'>
+                            <div class='total-orders-heading'>
                                 <h3>Delivered</h3>
                                 <CheckCircleOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -275,14 +287,30 @@ function Admin() {
                                         <option value="Cancelled">Cancelled</option>
                                     </select>
                                     <label htmlFor="location" className="form-label mt-3">Update Present Location:</label>
-                                    <input
-                                        type="text"
-                                        id="location"
-                                        className="form-control"
-                                        value={updatedLocation}
-                                        onChange={(e) => setUpdatedLocation(e.target.value)}
-                                        placeholder="e.g. Nairobi Warehouse"
-                                    />
+                                    <Autocomplete
+                                        onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                                        onPlaceChanged={() => {
+                                            const place = autocompleteRef.current?.getPlace();
+                                            if (place && place.name) {
+                                                setUpdatedLocation(place.name);
+                                                if (locationInputRef.current) {
+                                                    locationInputRef.current.value = place.name;
+                                                }
+                                            }
+                                        }}
+
+                                    >
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Enter location"
+                                            ref={locationInputRef}
+                                            value={updatedLocation}
+                                            onChange={(e) => setUpdatedLocation(e.target.value)}
+                                        />
+                                    </Autocomplete>
+
+
                                     <label htmlFor="courier" className="form-label mt-3">Assign Courier:</label>
                                     <select
                                         id="courier"

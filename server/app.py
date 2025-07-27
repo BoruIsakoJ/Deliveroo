@@ -125,6 +125,9 @@ class OrderByCourierSession(Resource):
                 'pickup_location': order.pickup_location,
                 'destination': order.destination,
                 'present_location': order.present_location,
+                'customer_name': order.user.name,
+                'customer_phone_number': order.user.phone_number,
+
             })
 
         return make_response(simplified_orders, 200)
@@ -331,8 +334,8 @@ class OrderResource(Resource):
                 'pickup_location': order.pickup_location,
                 'destination': order.destination,
                 'present_location': order.present_location,
-                'customer_name': order.user.name if order.user else 'N/A',
-                'customer_phone_number': order.user.phone_number  if order.user else 'N/A',
+                'customer_name': order.user.name,
+                'customer_phone_number': order.user.phone_number,
                 'courier_name': order.courier.name if order.courier else 'N/A',
                 'courier_phone_number': order.courier.phone_number if order.courier else 'N/A',
 
@@ -429,6 +432,7 @@ class OrderByUserSession(Resource):
                 'pickup_location': order.pickup_location,
                 'destination': order.destination,
                 'present_location': order.present_location,
+                'weight_in_kg': order.weight_in_kg
             })
 
         return make_response(simplified_orders, 200)
@@ -451,42 +455,50 @@ class OrderByUserSessionById(Resource):
 
         return make_response(order.to_dict(), 200)
     
-    def patch(self,id):
-        user_id = session.get('user_id')
-        if not user_id:
-            return make_response({'error': 'User not logged in'}, 401)
+    def patch(self, id):
+        try:
+            user_id = session.get('user_id')
+            if not user_id:
+                return make_response({'error': 'User not logged in'}, 401)
 
-        current_user = User.query.get(user_id)
-        if not current_user:
-            return make_response({'error': 'User not found'}, 404)
+            order = Order.query.filter_by(tracking_number=id, user_id=user_id).first()
+            if not order:
+                return make_response({'error': 'Order not found'}, 404)
 
-        order = Order.query.filter(Order.tracking_number == id, Order.user_id == user_id).first()
-        if not order:
-            return make_response({'error': 'Order not found'}, 404)
+            data = request.get_json()
+            status_changed = False
+            new_status = None
 
-        data = request.get_json()
-        status_changed = False
-        new_status = None
+            for attr, value in data.items():
+                if hasattr(order, attr):
+                    if attr == 'status':
+                        status_changed = True
+                        new_status = value
+                    setattr(order, attr, value)
 
-        for attr,value in data.items():
-            if hasattr(order,attr):
-                if attr=='status':
-                    status_changed = True
-                    new_status = value
-            setattr(order,attr,value)
+            db.session.commit() 
 
-        db.session.commit()
+            print("Order updated successfully")
 
-        if status_changed:
-            tracking_update=TrackingOrder(status=new_status,description=f'Status updated to {new_status}',order_id=order.id)
-            db.session.add(tracking_update)
-            db.session.commit()
+            if status_changed:
+                tracking_update = TrackingOrder(
+                    status=new_status,
+                    description=f'Status updated to {new_status}',
+                    order_id=order.id
+                )
+                db.session.add(tracking_update)
+                db.session.commit()  
+
+                print("Tracking update committed")
+
+            return make_response(order.to_dict(), 200)
+
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error occurred: {e}")
+            return make_response({'error': str(e)}, 400)
 
 
-        return make_response(
-            order.to_dict(),
-            200
-        )
 
 api.add_resource(OrderByUserSessionById,'/user_orders/<string:id>')
 

@@ -10,7 +10,6 @@
 .container {
     height: 90%;
     width: 100%;
-    /* background-color: red; */
     margin: 0 auto;
     padding: 20px 40px;
     display: flex;
@@ -96,7 +95,7 @@ p.welcome-msg-text {
 }
 
 .login-page-btn {
-    background: linear-gradient(135deg, rgb(23, 207, 207), rgb(2, 132, 197));;
+    background: linear-gradient(135deg, rgb(23, 207, 207), rgb(2, 132, 197));
     color: white;
     cursor: pointer;
     font-size: 14px;

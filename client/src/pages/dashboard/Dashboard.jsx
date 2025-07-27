@@ -4,7 +4,6 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
-import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
 import LuggageOutlinedIcon from '@mui/icons-material/LuggageOutlined';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -101,7 +100,7 @@ function Dashboard({ currentUser }) {
           <h3>Recent Activity</h3>
           <p>Your latest shipments and updates</p>
 
-          {orders.slice(0, 3).map(order => (
+          {[...orders].slice(-3).reverse().map(order => (
             <div className='order-details-container' key={order.id}>
               <div className='order-details-top'>
                 <h4>{order.tracking_number}</h4>

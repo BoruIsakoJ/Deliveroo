@@ -4,8 +4,10 @@ import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined
 import CachedIcon from '@mui/icons-material/Cached';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import { DataGrid } from '@mui/x-data-grid';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useJsApiLoader, Autocomplete } from '@react-google-maps/api'
+
 
 function Courier() {
     const [orders, setOrders] = useState([])
@@ -34,6 +36,8 @@ function Courier() {
             width: 130,
             renderCell: (params) => <span className={`status-badge ${params.value.toLowerCase().replace(/ /g, '-')}`}>{params.value}</span>
         },
+        { field: 'customer_name', headerName: 'Customer' },
+        { field: 'customer_phone_number', headerName: 'Customer Phone Number', width: 180 },
         {
             field: 'route',
             headerName: 'Route',
@@ -89,6 +93,17 @@ function Courier() {
             })
             .catch(err => console.error('Error updating:', err))
     }
+
+    const autocompleteRef = useRef(null);
+    const locationInputRef = useRef(null);
+
+
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries: ['places']
+    })
+
+    if (!isLoaded) return <p>Loading Google Maps...</p>
 
     return (
         <>
@@ -183,8 +198,28 @@ function Courier() {
                                         <option>Delivered</option>
                                     </select>
                                     <label className="form-label mt-3">Current Location:</label>
-                                    <input className="form-control" value={updatedLocation} onChange={e => setUpdatedLocation(e.target.value)} placeholder="e.g. Mombasa Road" />
-                                </>
+                                    <Autocomplete
+                                        onLoad={(autocomplete) => (autocompleteRef.current = autocomplete)}
+                                        onPlaceChanged={() => {
+                                            const place = autocompleteRef.current?.getPlace();
+                                            if (place && place.name) {
+                                                setUpdatedLocation(place.name);
+                                                if (locationInputRef.current) {
+                                                    locationInputRef.current.value = place.name;
+                                                }
+                                            }
+                                        }}
+
+                                    >
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            placeholder="Enter location"
+                                            ref={locationInputRef}
+                                            value={updatedLocation}
+                                            onChange={(e) => setUpdatedLocation(e.target.value)}
+                                        />
+                                    </Autocomplete>                                </>
                             )}
                         </div>
                         <div className="modal-footer">

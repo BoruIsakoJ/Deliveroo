@@ -163,5 +163,11 @@
 .status-badge.in.transit { 
   color: #92400e;
 }
+.pac-container {
+  z-index: 1055 !important;
+}
+.modal {
+  overflow: visible;
+}
 
 

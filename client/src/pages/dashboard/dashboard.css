@@ -150,6 +150,7 @@
 
 .order-details-top {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   font-weight: bold;
   font-size: 1rem;
@@ -161,11 +162,13 @@
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
   font-size: 0.85rem;
+  margin-top: -10px;
 }
 
 .order-details-bottom {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 0.9rem;
 }
 

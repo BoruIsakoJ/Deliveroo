@@ -1,85 +1,103 @@
-.navbar {
-  height: 50px;
+.custom-navbar {
+  height: 64px;
   background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 10px 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   position: fixed;
   top: 0;
-  width: 100vw;
-  z-index: 1000;
+  width: 100%;
+  z-index: 10;
 }
-.navbar-left {
+
+.custom-navbar-left,
+.custom-navbar-center,
+.custom-navbar-right {
   display: flex;
   align-items: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: rgb(23, 33, 54);
+  gap: 1.5rem;
+}
+
+.custom-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1f2937;
   text-decoration: none;
 }
-.company-logo {
+
+.custom-logo {
+  font-size: 24px !important;
+  color: rgb(2, 132, 197);
+}
+
+.custom-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color:  rgb(2, 132, 197);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.custom-icon {
   font-size: 20px !important;
-  margin-right: 5px;
 }
 
-.navbar-center {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgb(23, 207, 207);
-  text-shadow: 0 1px 2px rgba(23, 207, 207, 0.35);
-  text-decoration: none;
-}
-.navbar-center > div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-}
-.dashboard-logo {
-  font-size: 16px !important;
-}
-
-.navbar-right {
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 200;
-  line-height: 24px;
-  gap: 10px;
-}
-
-.user-profile button {
-  background: slategray;
+.user-profile .profile-btn {
+  background:  rgb(2, 132, 197);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 25px;
-  width: 25px;
-  padding: 5px;
+  height: 32px;
+  width: 32px;
   border-radius: 50%;
   border: none;
-  color: #333;
-  font-weight: 500;
+  color: #fff;
+  font-weight: 600;
   cursor: default;
+  font-size: 0.85rem;
 }
 
-.sign-in-btn {
+.custom-btn {
   padding: 8px 16px;
-  border: 1px solid orange;
-  color: orange;
-  border-radius: 5px;
-  background-color: #fff;
-  color: #333;
-  font-weight: 500;
+  font-size: 0.9rem;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  border: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
-.sign-in-btn:hover {
+
+.ghost-btn {
+  background-color: transparent;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.ghost-btn:hover {
   background-color: orange;
   color: #fff;
+  border-color: orange;
+}
+
+@media (max-width: 768px) {
+  .custom-navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 1rem;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .custom-navbar-right {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
 }

@@ -1,10 +1,10 @@
-import './userNavbar.css'
+import './userNavbar.css';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
 import { Link } from 'react-router-dom';
 
-function UserNavbar({ currentUser, setIsLoggedIn, setCurrentUser }) {
+function UserNavbar({ currentUser }) {
   function handleLogout() {
     fetch('/logout', {
       method: 'DELETE',
@@ -12,9 +12,8 @@ function UserNavbar({ currentUser, setIsLoggedIn, setCurrentUser }) {
     })
       .then(res => {
         if (res.ok) {
-          console.log("User logged out successfully")
-          setIsLoggedIn(false)
-          setCurrentUser({})
+          console.log("User logged out successfully");
+          window.location.reload();
         } else {
           console.error("Failed to log out");
         }
@@ -23,45 +22,50 @@ function UserNavbar({ currentUser, setIsLoggedIn, setCurrentUser }) {
   }
 
   function getInitials(name) {
-    if (!name) return ''
-    const parts = name.trim().split(' ')
-    const first = parts[0][0].toUpperCase()
-    const second = parts[1] ? parts[1][0].toUpperCase() : ''
-    return first + second
+    if (!name) return '';
+    const parts = name.trim().split(' ');
+    const first = parts[0][0].toUpperCase();
+    const second = parts[1] ? parts[1][0].toUpperCase() : '';
+    return first + second;
+  }
+
+  function getDashboardPath(user) {
+    if (!user) return '/login';
+    if (user.isAdmin) return '/admin';
+    if (user.isCourier) return '/courier';
+    return '/dashboard';
   }
 
 
-
   return (
-    <nav className='navbar'>
-      <Link to='/' className='navbar-left'>
-        <LocalShippingIcon className='company-logo' />
-        <p>Deliveroo</p>
-      </Link>
-
-      <div className='navbar-center'>
-      <Link to={currentUser.isAdmin?'/admin':'/dashboard'} className='navbar-center'>
-        <div>
-          <BarChartIcon className='dashboard-logo' />
-          <p>Dashboard</p>
-        </div>
-      </Link>
-
-      <Link to='/parcels' className='navbar-center'>
-        <div>
-          <LocalPostOfficeIcon className='dashboard-logo' />
-          <p>Parcels</p>
-        </div>
-      </Link>
+    <nav className='custom-navbar'>
+      <div className='custom-navbar-left'>
+        <Link to='/' className='custom-brand'>
+          <LocalShippingIcon className='custom-logo' />
+          <span>Deliveroo</span>
+        </Link>
       </div>
-      <div className='navbar-right'>
+
+      <div className='custom-navbar-center'>
+        <Link to={getDashboardPath(currentUser)} className='custom-nav-link'>
+          <BarChartIcon className='custom-icon' />
+          <span>Dashboard</span>
+        </Link>
+
+        <Link to='/parcels' className='custom-nav-link'>
+          <LocalPostOfficeIcon className='custom-icon' />
+          <span>Parcels</span>
+        </Link>
+      </div>
+
+      <div className='custom-navbar-right'>
         <div className='user-profile'>
-          <button>{getInitials(currentUser.name)}</button>
+          <button className='profile-btn'>{getInitials(currentUser.name)}</button>
         </div>
-        <button onClick={handleLogout} className='sign-in-btn'>Log Out</button>
+        <button onClick={handleLogout} className='custom-btn ghost-btn'>Log Out</button>
       </div>
     </nav>
-  )
+  );
 }
 
-export default UserNavbar
+export default UserNavbar;

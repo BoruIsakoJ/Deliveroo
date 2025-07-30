@@ -283,8 +283,59 @@ class CourierResource(Resource):
     def get(self):
         couriers_dict = [courier.to_dict() for courier in User.query.filter_by(isCourier=True).all()]
         return make_response(couriers_dict, 200)
+    
+    def post(self):
+        user_id= session.get('user_id')
+        if not user_id:
+            return make_response({'error': 'Unauthorized'}, 422)
+        current_user = User.query.get(user_id)
+        if not current_user or not current_user.isAdmin:
+            return make_response({'error': 'Unauthorized'}, 403)
+        data = request.get_json()
+        name = data.get('name')
+        email = data.get('email')
+        phone_number = data.get('phone_number')
+        password = data.get('password')
+        isCourier = data.get('isCourier', True)
+
+        new_courier = User(
+            name=name,
+            email=email,
+            phone_number=phone_number,
+            password_hash=password,
+            isCourier=isCourier,
+            isAdmin=False
+        )
+        db.session.add(new_courier)
+        db.session.commit()
+
+        return make_response(new_courier.to_dict(), 201)
 
 api.add_resource(CourierResource, '/couriers')
+
+
+class CourierById(Resource):
+    def get(self, id):
+        courier = User.query.filter_by(id=id, isCourier=True).first()
+        if not courier:
+            return make_response({'error': 'Courier not found'}, 404)
+        
+        return make_response(courier.to_dict(), 200)
+    
+    def delete(self, id):
+        courier = User.query.filter_by(id=id, isCourier=True).first()
+        if not courier:
+            return make_response({'error': 'Courier not found'}, 404)
+        
+        try:
+            db.session.delete(courier)
+            db.session.commit()
+            return make_response({'message': 'Courier deleted successfully'}, 200)
+        except Exception as e:
+            db.session.rollback()
+            return make_response({'error': f'Failed to delete courier: {str(e)}'}, 500)
+        
+api.add_resource(CourierById, '/couriers/<int:id>')
 
 class Me(Resource):
     def get(self):
@@ -520,6 +571,9 @@ class Logout(Resource):
         )
 
 api.add_resource(Logout, '/logout')
+
+
+
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

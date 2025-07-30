@@ -1,5 +1,4 @@
 import './signup.css';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -57,9 +56,6 @@ function Signup() {
     <div className='signup'>
       <div className='container'>
         <div className="signup-top">
-          <div className="signup-company-logo">
-            <LocalShippingIcon />
-          </div>
           <div className="welcome-msg">
             <h1 className='welcome-msg-header'>Join Deliveroo</h1>
             <p className='welcome-msg-text'>Create your account to get started</p>

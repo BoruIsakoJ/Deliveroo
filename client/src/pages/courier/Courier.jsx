@@ -90,6 +90,7 @@ function Courier() {
                 setSelectedOrder(null)
                 setUpdatedLocation('')
                 setUpdatedStatus('')
+                window.location.reload()
             })
             .catch(err => console.error('Error updating:', err))
     }

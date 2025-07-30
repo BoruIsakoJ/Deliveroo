@@ -169,5 +169,81 @@
 .modal {
   overflow: visible;
 }
+.quick-actions-wrapper {
+  display: block; 
+}
 
+.quick-actions-container {
+  width: 100%;
+  max-width: 960px; 
+  margin: 3rem 0;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.quick-actions-container {
+  margin-top: 3rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.quick-actions-header {
+  font-size: 20px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.quick-actions-text {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.quick-action {
+  background-color: #f1f5f9;
+  border-radius: 12px;
+  padding: 1rem;
+  text-decoration: none;
+  color: #0f172a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  border: 1px solid #e2e8f0;
+}
+
+.quick-action:hover {
+  background-color: #e2e8f0;
+  transform: translateY(-4px);
+}
+
+.quick-action svg {
+  font-size: 28px;
+  color: #3b82f6;
+}
+
+.quick-action-instruction {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+}
+
+.quick-action-mute {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
 

@@ -14,6 +14,8 @@ import CreateShipment from './pages/createShipment/CreateShipment';
 import Parcels from './pages/parcels/Parcels';
 import OrderDetails from './pages/orderDetails/OrderDetails';
 import Courier from './pages/courier/Courier';
+import AllCouriers from './pages/allCouriers/AllCouriers';
+import NewCourier from './pages/newCourier/NewCourier';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -54,6 +56,8 @@ function App() {
               <Route path='/parcels' element={<Parcels currentUser={currentUser} />} />
               <Route path='/orders/:trackingNumber' element={<OrderDetails/>} />
               <Route path='/courier' element={<Courier/>} />
+              <Route path='/couriers' element={<AllCouriers />} />
+              <Route path='/new-courier' element={<NewCourier />} />
             </Route>
           </Routes>
         </div>

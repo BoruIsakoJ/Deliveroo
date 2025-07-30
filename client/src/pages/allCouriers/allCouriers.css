@@ -1,0 +1,25 @@
+.courier-delete-button{
+    color: red;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+.actions-cell{
+    display: flex;
+    align-items: center;
+    margin-top: -7px;
+}
+
+.user-data-grid {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 750px;
+    height: auto;
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

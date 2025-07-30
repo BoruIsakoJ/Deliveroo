@@ -11,7 +11,8 @@ import { useEffect, useRef, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api'
-
+import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
+import LuggageOutlinedIcon from '@mui/icons-material/LuggageOutlined';
 
 import { Link } from 'react-router-dom';
 
@@ -231,6 +232,28 @@ function Admin() {
                             <p className='total-orders-note'>From deliveries</p>
                         </div>
                     </div>
+
+                    <div className="quick-actions-wrapper">
+                        <div className="quick-actions-container">
+                            <h3 className="quick-actions-header">Quick Actions</h3>
+                            <p className="quick-actions-text">Common tasks to get you started</p>
+                            <div className="quick-actions">
+                                <Link to="/new-courier" className="quick-action">
+                                    <AddOutlinedIcon />
+                                    <p className="quick-action-instruction">Create Courier</p>
+                                    <p className="quick-action-mute">Create a new courier</p>
+                                </Link>
+                                <Link to="/couriers" className="quick-action">
+                                    <LuggageOutlinedIcon />
+                                    <p className="quick-action-instruction">View All Couriers</p>
+                                    <p className="quick-action-mute">Manage couriers</p>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>
                 <div className="parcel-container">
                     <div className="parcel-controls">

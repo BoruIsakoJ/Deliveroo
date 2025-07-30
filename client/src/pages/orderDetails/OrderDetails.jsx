@@ -2,10 +2,6 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import '../track/track.css';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import LocationPinIcon from '@mui/icons-material/LocationPin';
 
 function OrderDetails() {
     const { trackingNumber } = useParams();
@@ -45,10 +41,10 @@ function OrderDetails() {
                             <div className="info-box">
                                 <h4 className="info-title">Delivery Details</h4>
                                 <div className="info-line"><span className="label">Sender:</span> {order.user.name}</div>
-                                <div className="info-line"><ArrowCircleLeftIcon className="info-icon" /> {order.pickup_location}</div>
-                                <div className="info-line"><ArrowCircleRightIcon className="info-icon" /> {order.destination}</div>
-                                <div className="info-line"><LocationPinIcon className="info-icon" /> {order.present_location}</div>
-                                <div className="info-line"><AccessTimeIcon className="info-icon" /> {order.created_at}</div>
+                                <div className="info-line"><span className="label">From:</span>{order.pickup_location}</div>
+                                <div className="info-line"><span className="label">To:</span>{order.destination}</div>
+                                <div className="info-line"><span className="label">Current Location:</span>{order.present_location}</div>
+                                <div className="info-line"><span className="label">Created At:</span>{order.created_at}</div>
                             </div>
 
                             <div className="info-box">

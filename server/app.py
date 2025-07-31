@@ -7,7 +7,13 @@ from flask_restful import Api, Resource
 from sqlalchemy.exc import IntegrityError
 from models import db, User, Order, TrackingOrder
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_url_path='',
+    static_folder='../client/build',
+    template_folder='../client/build'
+)
+
 bcrypt = Bcrypt(app)
 app.config.from_object(Config)
 db.init_app(app)
@@ -19,7 +25,7 @@ migrate = Migrate(app, db)
 
 @app.route("/")
 def index():
-    return '<h1>Backend is working</h1>'
+    return render_template("index.html")
 
 
 class Register(Resource):
@@ -571,9 +577,3 @@ class Logout(Resource):
         )
 
 api.add_resource(Logout, '/logout')
-
-
-
-
-if __name__ == "__main__":
-    app.run(port=5000, debug=True)

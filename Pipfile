@@ -10,13 +10,13 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 sqlalchemy-serializer = "*"
 flask-bcrypt = "*"
-psycopg-binary = "*"
 flask-restful = "*"
 flask-cors = "*"
 honcho = "*"
 gunicorn = "*"
 bcrypt = "*"
 flask-jwt-extended = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

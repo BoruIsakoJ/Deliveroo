@@ -2,9 +2,10 @@ import './userNavbar.css';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LocalPostOfficeIcon from '@mui/icons-material/LocalPostOffice';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function UserNavbar({ currentUser }) {
+  const navigate = useNavigate()
   function handleLogout() {
     fetch('/logout', {
       method: 'DELETE',
@@ -14,6 +15,7 @@ function UserNavbar({ currentUser }) {
         if (res.ok) {
           console.log("User logged out successfully");
           window.location.reload();
+          navigate('/');
         } else {
           console.error("Failed to log out");
         }

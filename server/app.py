@@ -1,4 +1,4 @@
-from flask import Flask,request,session,make_response,render_template
+from flask import Flask,request,session,make_response,render_template,jsonify
 from config import Config
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -246,7 +246,16 @@ class OrderByIdResource(Resource):
 
 
         return make_response(
-            order.to_dict(),
+            jsonify({
+                "id": order.id,
+                "tracking_number": order.tracking_number,
+                "status": order.status,
+                "present_location": order.present_location,
+                "customer_name": order.user.name,
+                "customer_phone_number": order.user.phone_number,
+                "courier_name": order.courier.name if order.courier else None,
+                "courier_phone_number": order.courier.phone_number if order.courier else None, 
+            }),
             200
         )
     

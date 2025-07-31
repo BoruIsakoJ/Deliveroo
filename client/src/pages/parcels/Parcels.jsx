@@ -38,6 +38,7 @@ function Parcels() {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({
         destination: newDestination,
         price_estimate: pricePreview?.total ?? selectedOrder.price_estimate

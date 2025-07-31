@@ -79,6 +79,7 @@ function Courier() {
         fetch(`/courier_orders/${selectedOrder.tracking_number}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({
                 status: updatedStatus,
                 present_location: updatedLocation,
@@ -86,11 +87,10 @@ function Courier() {
         })
             .then(res => res.json())
             .then(updated => {
-                setOrders(prev => prev.map(o => o.tracking_number === updated.tracking_number ? updated : o))
+                setOrders(prev => prev.map(o => o.tracking_number === updated.tracking_number ? { ...o, ...updated } : o))
                 setSelectedOrder(null)
                 setUpdatedLocation('')
                 setUpdatedStatus('')
-                window.location.reload()
             })
             .catch(err => console.error('Error updating:', err))
     }
@@ -124,7 +124,7 @@ function Courier() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Pending</h3>
                                 <ErrorOutlineOutlinedIcon className='total-orders-icon' />
                             </div>

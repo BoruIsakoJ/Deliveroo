@@ -113,29 +113,41 @@ function Admin() {
 
     function handleUpdateStatus() {
 
+        const updatedOrder = {
+            status: updatedStatus,
+            present_location: updatedLocation,
+        };
+
+        if (selectedCourierId) {
+            updatedOrder.courier_id = selectedCourierId;
+        }
+
         fetch(`/orders/${selectedOrder.tracking_number}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                status: updatedStatus,
-                present_location: updatedLocation,
-                courier_id: selectedCourierId
-            }),
+            credentials: 'include',
+            body: JSON.stringify(updatedOrder),
         })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Server returned ${res.status}`);
+                }
+                return res.json()
+            })
             .then(updatedOrder => {
                 setOrders(prevOrders =>
                     prevOrders.map(order =>
-                        order.tracking_number === updatedOrder.tracking_number ? updatedOrder : order
+                        order.tracking_number === updatedOrder.tracking_number
+                            ? { ...order, ...updatedOrder }  
+                            : order
                     )
                 )
                 setSelectedOrder(null)
                 setUpdatedStatus('')
                 setUpdatedLocation('')
                 setSelectedCourierId('')
-                window.location.reload()
             })
             .catch(err => console.error('Error updating order status:', err))
     }
@@ -179,7 +191,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Pending</h3>
                                 <ErrorOutlineOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -188,7 +200,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Confirmed</h3>
                                 <RecommendOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -206,7 +218,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>In Transit</h3>
                                 <LocalShippingOutlinedIcon className='total-orders-icon' />
                             </div>
@@ -215,7 +227,7 @@ function Admin() {
                         </div>
 
                         <div className='total-orders'>
-                            <div class='total-orders-heading'>
+                            <div className='total-orders-heading'>
                                 <h3>Delivered</h3>
                                 <CheckCircleOutlinedIcon className='total-orders-icon' />
                             </div>

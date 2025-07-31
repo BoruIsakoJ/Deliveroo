@@ -63,6 +63,7 @@ with app.app_context():
     order2 = Order(
         pickup_location="CBD",
         destination="Karen",
+        present_location="CBD",
         status="Pending",
         weight_in_kg=5.0,
         price_estimate=750.0,

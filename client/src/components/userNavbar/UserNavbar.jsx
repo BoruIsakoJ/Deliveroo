@@ -15,6 +15,7 @@ function UserNavbar({ currentUser }) {
         if (res.ok) {
           console.log("User logged out successfully");
           navigate('/');
+          window.location.reload()
         } else {
           console.error("Failed to log out");
         }
